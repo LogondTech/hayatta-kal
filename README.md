@@ -4,16 +4,16 @@
 
 Yukarıdan bakışlı bir hayatta kalma oyunu. Arbaletin kendi kendine ateş ediyor; sen hareket ediyor, mücevher topluyor, seviye atlıyor ve büyüyen dalgalara karşı güçlendirme seçiyorsun.
 
-Bu oyunu [bir YouTube videosu](https://www.youtube.com/watch?v=ooOnOUPlCF0) için yaptık. Kodu Godot 4.7'de Claude Code (Opus 5.5) yazdı; bütün modeller, dokular, müzik ve ara sahne videoları [Higgsfield](https://higgsfield.ai/s/claude-opus-5-5-yt-yusufipk-kKcOju) ile üretildi.
+**Hayatta Kal, LogondTech tarafından geliştirilen özgün bir projedir. Oyun karakterleri ve proje için hazırlanan içerikler proje sahibine aittir.**
 
 ## Oyna
 
-[Releases](https://github.com/yusufipk/hayatta-kal/releases/latest) sayfasından sistemine uygun dosyayı indir ve çalıştır, kurulum gerekmiyor.
+[En son sürümü GitHub Releases sayfasından indir](https://github.com/LogondTech/hayatta-kal/releases/latest); kurulum gerekmiyor.
 
-- **Windows:** `HayattaKal.exe`. Dosya imzalı olmadığı için SmartScreen uyarı verebilir: "Ek bilgi"ye, sonra "Yine de çalıştır"a tıkla.
+- **Windows:** `HayattaKal.exe`. Dosya imzalı olmadığı için SmartScreen uyarısı çıkabilir; Windows iletişim kutusundaki yönergeleri izleyin.
 - **Linux:** `chmod +x HayattaKal.x86_64 && ./HayattaKal.x86_64`
 
-Vulkan destekleyen bir ekran kartı gerekiyor (Windows'ta Direct3D 12 de yeterli).
+Vulkan destekleyen bir ekran kartı gerekiyor. Windows'ta Direct3D 12 de kullanılabilir.
 
 ## Kontroller
 
@@ -28,4 +28,4 @@ Vulkan destekleyen bir ekran kartı gerekiyor (Windows'ta Direct3D 12 de yeterli
 
 ## Lisans
 
-Kod MIT lisanslı. `assets/` klasöründeki modeller, dokular, müzik ve videolar bu lisansın kapsamında değil.
+Kod MIT lisanslıdır; ayrıntılar için `LICENSE` dosyasına bakın. `assets/` klasöründeki modeller, dokular, müzik ve videolar MIT lisansının kapsamında değildir.

@@ -21,6 +21,10 @@ var _interval := 1.0
 var _side := 0
 
 
+static func bounded_cluster_size(remaining: int, requested: int, alive: int) -> int:
+	return maxi(0, mini(mini(remaining, requested), MAX_ALIVE - alive))
+
+
 func start() -> void:
 	_next_wave()
 
@@ -42,7 +46,7 @@ func _physics_process(delta: float) -> void:
 	_spawn_t -= delta
 	var alive := get_tree().get_node_count_in_group(&"enemies")
 	if _to_spawn > 0 and _spawn_t <= 0.0 and alive < MAX_ALIVE:
-		var cluster := mini(_to_spawn, randi_range(2, 5))
+		var cluster := bounded_cluster_size(_to_spawn, randi_range(2, 5), alive)
 		_spawn_cluster(cluster)
 		_to_spawn -= cluster
 		_spawn_t = _interval * cluster

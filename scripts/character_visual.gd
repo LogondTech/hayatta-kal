@@ -14,7 +14,7 @@ var meshes: Array[MeshInstance3D] = []
 var _move_anim := ""
 var _idle_anim := ""
 var _current := ""
-
+var _flash_generation := 0
 static var _flash_mat: StandardMaterial3D
 
 
@@ -114,6 +114,8 @@ func _play(anim: String, speed: float) -> void:
 
 
 func flash(duration := 0.08) -> void:
+	_flash_generation += 1
+	var generation := _flash_generation
 	if not _flash_mat:
 		_flash_mat = StandardMaterial3D.new()
 		_flash_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
@@ -121,11 +123,12 @@ func flash(duration := 0.08) -> void:
 		_flash_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	for mi in meshes:
 		mi.material_overlay = _flash_mat
-	get_tree().create_timer(duration, true).timeout.connect(_clear_flash)
+	get_tree().create_timer(duration, true).timeout.connect(_clear_flash.bind(generation))
 
 
-func _clear_flash() -> void:
+func _clear_flash(generation: int) -> void:
+	if generation != _flash_generation:
+		return
 	for mi in meshes:
 		if is_instance_valid(mi):
 			mi.material_overlay = null
-

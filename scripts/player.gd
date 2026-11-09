@@ -9,6 +9,7 @@ signal leveled_up
 const RADIUS := 0.4
 const MODEL_PATH := "res://assets/models/hero.glb"
 const IDLE_PATH := "res://assets/models/hero_idle.glb"
+const TARGET_REFRESH_INTERVAL := 0.1
 
 var max_hp := 100.0
 var hp := 100.0
@@ -31,6 +32,9 @@ var _fire_cd := 0.0
 var _hurt_flash_cd := 0.0
 var _visual: CharacterVisual
 var _aim_dir := Vector3.BACK
+var _target_refresh_t := 0.0
+var _gem_scan_t := 0.0
+var _cached_target: Enemy
 
 
 func _ready() -> void:
@@ -64,7 +68,13 @@ func _physics_process(delta: float) -> void:
 	global_position.y = 0
 	_visual.set_motion(move.length() * move_speed / 6.0)
 
-	var target := _nearest_enemy()
+	_target_refresh_t -= delta
+	if _target_refresh_t <= 0.0 or not is_instance_valid(_cached_target) or _cached_target.dying:
+		_target_refresh_t = TARGET_REFRESH_INTERVAL
+		_cached_target = _nearest_enemy()
+	var target := _cached_target
+	if not is_instance_valid(target) or target.dying:
+		target = null
 	if target:
 		var to := target.global_position - global_position
 		to.y = 0
@@ -78,11 +88,14 @@ func _physics_process(delta: float) -> void:
 		_fire_cd = fire_interval
 		_shoot(_aim_dir)
 
-	for g in get_tree().get_nodes_in_group(&"gems"):
-		var gem := g as Gem
-		var d := gem.global_position - global_position
-		if Vector2(d.x, d.z).length() < pickup_radius:
-			gem.attract(self)
+	_gem_scan_t -= delta
+	if _gem_scan_t <= 0.0:
+		_gem_scan_t = TARGET_REFRESH_INTERVAL
+		for g in get_tree().get_nodes_in_group(&"gems"):
+			var gem := g as Gem
+			var d := gem.global_position - global_position
+			if Vector2(d.x, d.z).length() < pickup_radius:
+				gem.attract(self)
 	_hurt_flash_cd -= delta
 
 
