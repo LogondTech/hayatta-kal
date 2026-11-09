@@ -26,6 +26,16 @@ Vulkan destekleyen bir ekran kartı gerekiyor. Windows'ta Direct3D 12 de kullan�
 
 `project.godot` dosyasını [Godot 4.7](https://godotengine.org/download) ile aç ve F5'e bas.
 
+## Tarayıcıda oyna
+
+Godot Export menüsündeki **Web** preset'iyle `build/web/index.html` üret. Web oyunu `file://` üzerinden açma; proje kökünde yerel HTTP sunucusu başlat ve sonra tarayıcıda `http://localhost:8000` adresine git:
+
+```sh
+python3 -m http.server 8000 --directory build/web
+```
+
+Windows'ta `python` komutu varsa `python -m http.server 8000 --directory build/web` kullanabilirsin. Oyun WebGL 2 destekleyen güncel tarayıcı gerektirir.
+
 ## Geliştirici kontrolleri
 
 Proje kökünde aşağıdaki komutlarla içe aktarmayı, regresyon testlerini ve 150 düşmanlı sentetik CPU mikrobenchmark'ını çalıştırabilirsin:
