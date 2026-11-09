@@ -17,8 +17,9 @@ var _leaving := false
 
 
 func _ready() -> void:
-	if Autopilot.enabled() or not ResourceLoader.exists(VIDEO_PATH):
-		_go.call_deferred(GAME if Autopilot.enabled() else CUTSCENE)
+	# Browser video codecs vary; keep the cinematic on desktop and start Web builds directly.
+	if Autopilot.enabled() or OS.has_feature("web") or not ResourceLoader.exists(VIDEO_PATH):
+		_go.call_deferred(GAME if Autopilot.enabled() or OS.has_feature("web") else CUTSCENE)
 		return
 	Audio.music(-15.0, 2.0)
 	player.stream = load(VIDEO_PATH)
