@@ -67,9 +67,30 @@ func _test_main_scene_startup() -> void:
 	await get_tree().create_timer(0.2).timeout
 	_check(main.get_node("Player") != null, "Main scene must create the player")
 	_check(main.get_node("Enemies").get_child_count() > 0, "Wave director must begin spawning enemies")
+	main.get_node("WaveDirector").set_physics_process(false)
+	await _test_projectile_collision(main, Enemy.Kind.FAST, Vector3(0, 0, -3), 14.0)
+	await _test_projectile_collision(main, Enemy.Kind.BRUTE, Vector3(4, 0, -3), 75.0)
 	main.free()
 	await get_tree().process_frame
 	await get_tree().process_frame
+
+
+func _test_projectile_collision(main: Node, kind: Enemy.Kind, position: Vector3, expected_hp: float) -> void:
+	var enemy := Enemy.new()
+	enemy.setup(kind, 1.0, 1.0, 1.0)
+	enemy.player = main.get_node("Player") as Player
+	enemy.gem_parent = main.get_node("Gems")
+	main.get_node("Enemies").add_child(enemy)
+	enemy.global_position = position
+	await get_tree().physics_frame
+	enemy.set_physics_process(false)
+	var projectile := Projectile.new()
+	projectile.dir = Vector3(0, 0, -1)
+	projectile.damage = 10.0
+	main.get_node("Projectiles").add_child(projectile)
+	projectile.global_position = Vector3(position.x, 1.1, position.z + 1.5)
+	await get_tree().create_timer(0.12).timeout
+	_check(enemy.hp < expected_hp, "Projectile broadphase query must hit fast and brute enemies")
 
 
 func _cleanup_audio() -> void:

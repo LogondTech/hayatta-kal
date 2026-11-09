@@ -6,4 +6,5 @@
 - [x] Oyuncu hedef ve mücevher seçim taramalarını her fizik karesinde değil, kısa ve sabit aralıklarla yenilemeli; geçersiz/ölmekte olan hedef ateşleme hedefi olarak kalmamalı.
 - [x] README oyun/proje tanıtımını korumalı, güncel depo sahibine atıfsız üçüncü taraf yaratıcı/yayın bilgisi vermemeli; indirme adresi bu depoya yönelmeli ve kod lisansı ile varlık kapsamını ayırmalı.
 - [x] Godot 4.7 headless import, ana sahne çalışma kontrolü ve yeni mantık için regresyon testi başarılı olmalı; mevcut kayıtlar ve oynanış akışları korunmalı.
-- [ ] Kullanılabilir bir test/cihaz profilinde değişikliklerin performans etkisi ölçülmeli; profilleme yapılmayan donanım için FPS kazanımı vaat edilmemeli.
+- [x] 150 hedef / 2.500 sorgu CPU mikrobenchmark'ı beş kez çalıştırılmalı; broadphase ile eski GDScript taraması aynı isabet sayısıyla karşılaştırılmalı.
+- [ ] Hedef cihazın CPU/GPU, frame time ve FPS profili gerçek cihaz üzerinde alınmalı. Cloud sandbox bu cihazı veya GPU'yu temsil etmiyor; cihaz ölçümü olmadan FPS kazanımı ileri sürülmemeli.

@@ -21,12 +21,13 @@ static func steer(player: Node3D) -> Vector2:
 		if l < 8.0 and l > 0.01:
 			push += d / (l * l)
 	var pull := Vector3.ZERO
-	var best := 1e9
+	var best_distance_squared := INF
 	for g in player.get_tree().get_nodes_in_group(&"gems"):
 		var d: Vector3 = g.global_position - p
 		d.y = 0
-		if d.length() < best:
-			best = d.length()
+		var distance_squared := d.length_squared()
+		if distance_squared < best_distance_squared:
+			best_distance_squared = distance_squared
 			pull = d.normalized()
 	var centre := -p / 20.0
 	centre.y = 0

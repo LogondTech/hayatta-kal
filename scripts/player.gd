@@ -35,6 +35,8 @@ var _aim_dir := Vector3.BACK
 var _target_refresh_t := 0.0
 var _gem_scan_t := 0.0
 var _cached_target: Enemy
+var _autopilot_refresh_t := 0.0
+var _autopilot_input := Vector2.ZERO
 
 
 func _ready() -> void:
@@ -61,7 +63,11 @@ func _physics_process(delta: float) -> void:
 		return
 	var input := Input.get_vector(&"move_left", &"move_right", &"move_up", &"move_down")
 	if autopilot:
-		input = Autopilot.steer(self)
+		_autopilot_refresh_t -= delta
+		if _autopilot_refresh_t <= 0.0:
+			_autopilot_refresh_t = TARGET_REFRESH_INTERVAL
+			_autopilot_input = Autopilot.steer(self)
+		input = _autopilot_input
 	var move := Vector3(input.x, 0, input.y)
 	velocity = move * move_speed
 	move_and_slide()
