@@ -136,7 +136,10 @@ static func fmt(t: float) -> String:
 
 func set_time(t: float, best: float) -> void:
 	_time.text = fmt(t)
-	_best.text = "En iyi  " + fmt(maxf(best, t))
+	if t > best:
+		_best.text = "Rekor adayı  " + fmt(t)
+	else:
+		_best.text = "En iyi  " + fmt(best)
 
 
 func set_health(hp: float, max_hp: float) -> void:

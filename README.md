@@ -36,6 +36,8 @@ godot --headless --path . res://tests/regression_smoke.tscn
 godot --headless --path . --script res://tests/performance_probe.gd
 ```
 
+Regresyon testi ana sahneyi 900 fizik karesi boyunca çalıştırır ve temiz kapanış yapar; bu yüzden kısa kontrollerden daha uzun sürer.
+
 Mikrobenchmark oyun FPS'ini veya GPU performansını değil, GDScript taramasıyla fizik broadphase sorgusunun CPU maliyetini karşılaştırır.
 
 ## Lisans

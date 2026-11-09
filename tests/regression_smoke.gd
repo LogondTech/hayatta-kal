@@ -30,7 +30,9 @@ func _test_saved_best_time_display() -> void:
 	var best_label := hud.get("_best") as Label
 	_check(best_label.text == "En iyi  01:40", "HUD must show saved best, not current run time")
 	hud.set_time(120.0, 100.0)
-	_check(best_label.text == "En iyi  02:00", "HUD must show a new in-progress record")
+	_check(best_label.text == "Rekor adayı  02:00", "HUD must mark an unsaved in-progress record as a candidate")
+	hud.set_time(100.0, 100.0)
+	_check(best_label.text == "En iyi  01:40", "HUD must show the persisted best when the run only ties it")
 	hud.free()
 
 
@@ -70,6 +72,10 @@ func _test_main_scene_startup() -> void:
 	main.get_node("WaveDirector").set_physics_process(false)
 	await _test_projectile_collision(main, Enemy.Kind.FAST, Vector3(0, 0, -3), 14.0)
 	await _test_projectile_collision(main, Enemy.Kind.BRUTE, Vector3(4, 0, -3), 75.0)
+	main.get_node("WaveDirector").set_physics_process(true)
+	for _frame in 900:
+		await get_tree().physics_frame
+	_check(get_tree().get_node_count_in_group(&"enemies") <= 150, "Long run must respect the 150-enemy cap")
 	main.free()
 	await get_tree().process_frame
 	await get_tree().process_frame
