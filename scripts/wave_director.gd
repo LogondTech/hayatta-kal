@@ -8,6 +8,7 @@ signal wave_started(n: int)
 const WAVE_TIME := 20.0
 const MAX_ALIVE := 150
 const SPAWN_EDGE := 27.0
+const SPAWN_WINDOW := 16.0
 
 var player: Player
 var enemy_parent: Node
@@ -25,6 +26,34 @@ static func bounded_cluster_size(remaining: int, requested: int, alive: int) -> 
 	return maxi(0, mini(mini(remaining, requested), MAX_ALIVE - alive))
 
 
+static func wave_spawn_budget(wave_number: int) -> int:
+	var w := maxi(wave_number, 1)
+	return 4 + w * 4 + int(w * w * 0.15)
+
+
+static func hp_multiplier(wave_number: int) -> float:
+	var w := float(maxi(wave_number - 1, 0))
+	return 1.0 + 0.12 * w + 0.004 * w * w
+
+
+static func speed_multiplier(wave_number: int) -> float:
+	var w := float(maxi(wave_number - 1, 0))
+	return 1.0 + minf(0.025 * w, 0.45)
+
+
+static func damage_multiplier(wave_number: int) -> float:
+	var w := float(maxi(wave_number - 1, 0))
+	return minf(1.0 + 0.05 * w, 2.0)
+
+
+static func brute_chance(wave_number: int) -> float:
+	return 0.0 if wave_number < 2 else minf(0.06 + 0.035 * wave_number, 0.4)
+
+
+static func can_advance_wave(remaining: int, alive: int, elapsed: float) -> bool:
+	return remaining == 0 and (elapsed >= WAVE_TIME or (alive == 0 and elapsed > 3.0))
+
+
 func start() -> void:
 	_next_wave()
 
@@ -32,8 +61,8 @@ func start() -> void:
 func _next_wave() -> void:
 	wave += 1
 	_wave_t = 0.0
-	_to_spawn += 4 + wave * 4 + int(wave * wave * 0.3)
-	_interval = 13.0 / float(_to_spawn)
+	_to_spawn = wave_spawn_budget(wave)
+	_interval = SPAWN_WINDOW / float(maxi(_to_spawn, 1))
 	_spawn_t = 0.0
 	_side = randi() % 4
 	wave_started.emit(wave)
@@ -50,7 +79,7 @@ func _physics_process(delta: float) -> void:
 		_spawn_cluster(cluster)
 		_to_spawn -= cluster
 		_spawn_t = _interval * cluster
-	if _wave_t >= WAVE_TIME or (_to_spawn == 0 and alive == 0 and _wave_t > 3.0):
+	if can_advance_wave(_to_spawn, alive, _wave_t):
 		_next_wave()
 
 
@@ -64,14 +93,13 @@ func _spawn_cluster(n: int) -> void:
 		1: base = Vector3(SPAWN_EDGE, 0, along)
 		2: base = Vector3(along, 0, SPAWN_EDGE)
 		_: base = Vector3(-SPAWN_EDGE, 0, along)
-	var w := float(wave - 1)
-	var hp_mult := 1.0 + 0.16 * w + 0.01 * w * w
-	var speed_mult := 1.0 + minf(0.025 * w, 0.45)
-	var dmg_mult := 1.0 + 0.07 * w
-	var brute_chance := 0.0 if wave < 2 else minf(0.06 + 0.035 * wave, 0.4)
+	var hp_mult := hp_multiplier(wave)
+	var speed_mult := speed_multiplier(wave)
+	var dmg_mult := damage_multiplier(wave)
+	var brute_probability := brute_chance(wave)
 	for i in n:
 		var e := Enemy.new()
-		var k := Enemy.Kind.BRUTE if randf() < brute_chance else Enemy.Kind.FAST
+		var k := Enemy.Kind.BRUTE if randf() < brute_probability else Enemy.Kind.FAST
 		e.setup(k, hp_mult, speed_mult, dmg_mult)
 		e.player = player
 		e.gem_parent = gem_parent

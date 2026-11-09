@@ -7,4 +7,6 @@
 - [x] README oyun/proje tanıtımını korumalı, güncel depo sahibine atıfsız üçüncü taraf yaratıcı/yayın bilgisi vermemeli; indirme adresi bu depoya yönelmeli ve kod lisansı ile varlık kapsamını ayırmalı.
 - [x] Godot 4.7 headless import, 900 fizik karelik ana sahne regresyonu ve yeni mantık testleri geçmeli; mevcut kayıt politikası korunmalı.
 - [x] 150 hedef / 2.500 sorgu CPU mikrobenchmark'ı beş kez çalıştırılmalı; broadphase ile eski GDScript taraması aynı isabet sayısıyla karşılaştırılmalı.
+- [x] Zorluk eğrisi, spawn borcu ve projectile hızına yönelik tek aday setini testli ve geri alınabilir değişikliklerle uygulayıp ölçüm planını yazmak.
+- [ ] Gerçek oyuncu koşularıyla zorluk/mermi hızı adayını baseline'a karşı kalibre etmek; autopilot tek başına kabul ölçütü değildir.
 - [ ] Hedef cihazın CPU/GPU, frame time ve FPS profili gerçek cihaz üzerinde alınmalı. Cloud sandbox bu cihazı veya GPU'yu temsil etmiyor; cihaz ölçümü olmadan FPS kazanımı ileri sürülmemeli.

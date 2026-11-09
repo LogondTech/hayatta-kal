@@ -1,7 +1,7 @@
 class_name Projectile
 extends Node3D
 
-const SPEED := 26.0
+const SPEED := 30.0
 const LIFE := 0.8
 const HIT_RADIUS := 0.35
 

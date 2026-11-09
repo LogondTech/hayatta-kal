@@ -10,6 +10,7 @@ func _ready() -> void:
 func _run() -> void:
 	await _test_saved_best_time_display()
 	_test_enemy_cluster_capacity()
+	_test_difficulty_curve()
 	await _test_overlapping_hit_flashes()
 	await _test_main_scene_startup()
 	await _cleanup_audio()
@@ -40,6 +41,21 @@ func _test_enemy_cluster_capacity() -> void:
 	_check(WaveDirector.bounded_cluster_size(10, 5, 149) == 1, "One free slot must spawn at most one enemy")
 	_check(WaveDirector.bounded_cluster_size(10, 5, 150) == 0, "Full enemy capacity must spawn none")
 	_check(WaveDirector.bounded_cluster_size(2, 5, 140) == 2, "Remaining wave budget must cap cluster size")
+
+
+func _test_difficulty_curve() -> void:
+	_check(WaveDirector.wave_spawn_budget(1) == 8, "Opening spawn budget must remain approachable")
+	_check(WaveDirector.wave_spawn_budget(10) == 59, "Midgame spawn budget must follow the softened curve")
+	_check(WaveDirector.wave_spawn_budget(20) == 144, "Late spawn budget must not grow as fast as the old quadratic curve")
+	_check(is_equal_approx(WaveDirector.hp_multiplier(1), 1.0), "Wave one must use baseline enemy HP")
+	_check(is_equal_approx(WaveDirector.hp_multiplier(10), 2.404), "Wave ten HP multiplier must match the tuned curve")
+	_check(WaveDirector.hp_multiplier(30) < 8.0, "Late enemies must not become extreme HP sponges")
+	_check(is_equal_approx(WaveDirector.speed_multiplier(30), 1.45), "Existing late-game speed ceiling must be preserved")
+	_check(is_equal_approx(WaveDirector.damage_multiplier(30), 2.0), "Contact damage must have a two-times ceiling")
+	_check(not WaveDirector.can_advance_wave(10, 0, 25.0), "A wave must not advance with unspawned budget")
+	_check(WaveDirector.can_advance_wave(0, 10, 20.0), "A drained wave may advance at its normal boundary")
+	_check(Projectile.SPEED == 30.0, "Projectile speed must use the tuned candidate value")
+	_check(Projectile.SPEED * Projectile.LIFE >= 14.0, "Projectile lifetime must cover the full targeting range")
 
 
 func _test_overlapping_hit_flashes() -> void:
